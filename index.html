@@ -2543,7 +2543,12 @@
                     const newSheets = sheets.filter(s => s.id !== sheetId);
                     setSheets(newSheets);
                     if (activeSheetId === sheetId) {
-                        setActiveSheetId(newSheets[0].id);
+                        const remainingVisible = newSheets.filter(s => {
+                            if (lang === 'en' && (s.id === 'sheet-guide-ru' || s.id === 'sheet-demo-ru')) return false;
+                            if (lang === 'ru' && (s.id === 'sheet-guide-en' || s.id === 'sheet-demo-en')) return false;
+                            return true;
+                        });
+                        setActiveSheetId(remainingVisible[0]?.id || newSheets[0].id);
                     }
                 }
             };
@@ -3614,7 +3619,7 @@
                                         ) : (
                                             <span onDoubleClick={(e) => { e.stopPropagation(); setEditingSheetId(s.id); }}>{displayName}</span>
                                         )}
-                                        {sheets.length > 1 && s.id !== 'sheet-guide-en' && s.id !== 'sheet-guide-ru' && (
+                                        {sheets.length > 1 && (
                                             <button onClick={(e) => deleteSheet(e, s.id)} className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-rose-100 hover:text-rose-600 rounded transition-all ml-1" title={I18N[lang]?.confirmDeleteSheet}>
                                                 <X size={14} />
                                             </button>
